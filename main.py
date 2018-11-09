@@ -20,9 +20,11 @@ class Game:
     def new(self):
         self.all_sprites = pg.sprite.Group()
         self.player = Player()
-        self.ground = Immovable()
+        self.ground = Immovable(WIDTH,10,WIDTH/2,595)
+        self.platform = Immovable(WIDTH/2,10,3*WIDTH/4,300)
         self.all_sprites.add(self.player)
         self.all_sprites.add(self.ground)
+        self.all_sprites.add(self.platform)
         self.run()
         # create new object
     def run(self):
@@ -32,7 +34,6 @@ class Game:
             self.events()
             self.update()
             self.draw()
-            self.collision_check(self.player,self.ground)
         # game loop
     def update(self):
         self.all_sprites.update()
@@ -56,10 +57,6 @@ class Game:
     def show_go_screen(self):
         # show game over screen
         pass
-    def collision_check(self,sprite1,sprite2):
-        collision = py.sprite.collde_rect(sprite1,sprite2)
-        if collision == true:
-            sys.exit()
     # init sound mixer
 
 g=Game()

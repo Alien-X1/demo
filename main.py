@@ -18,25 +18,41 @@ class Game:
         self.running = True
         # init pygame and create window
     def new(self):
-        self.all_sprites = pg.sprite.Group()
-        self.player = Player()
+        self.players = pg.sprite.Group()
+        self.immovables = pg.sprite.Group()
+        self.gamer = Player()
         self.ground = Immovable()
-        self.all_sprites.add(self.player)
-        self.all_sprites.add(self.ground)
+        self.ground.image = pg.Surface((WIDTH, 10))
+        self.ground.rect.center = (WIDTH / 4, HEIGHT - 5)
+        self.ground.pos = vec(WIDTH / 4, HEIGHT - 5)
+        self.platform = Immovable()
+        self.image = pg.Surface((WIDTH / 3, 10))
+        self.rect.center = (2 * WIDTH / 3, 3 * HEIGHT /4)
+        self.pos = vec(2 * WIDTH / 3, 3 * HEIGHT / 4)
+        self.players.add(self.gamer)
+        self.immovables.add(self.ground)
+        self.immovables.add(self.platform)
         self.run()
         # create new object
     def run(self):
         self.playing = True
         while self.playing:
-            self.clock.tick(FPS)
+            self.clock.tick(TICKS)
             self.events()
             self.update()
             self.draw()
-            self.collision_check(self.player,self.ground)
+            self.collision()
         # game loop
     def update(self):
-        self.all_sprites.update()
+        self.players.update()
+        self.immovables.update()
         # updates sprites
+    def collision(self):
+        if pg.sprite.spritecollide(self.gamer, self.immovables, False):
+            self.gamer.collide = True
+        elif not pg.sprite.spritecollide(self.gamer, self.immovables, False):
+            self.gamer.collide = False
+        # sprite collision
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -46,7 +62,8 @@ class Game:
         # listening for events
     def draw(self):
         self.screen.fill(REDDISH)
-        self.all_sprites.draw(self.screen)
+        self.players.draw(self.screen)
+        self.immovables.draw(self.screen)
         # double buffer
         pg.display.flip()
         # screen creation
@@ -56,10 +73,6 @@ class Game:
     def show_go_screen(self):
         # show game over screen
         pass
-    def collision_check(self,sprite1,sprite2):
-        collision = py.sprite.collde_rect(sprite1,sprite2)
-        if collision == true:
-            sys.exit()
     # init sound mixer
 
 g=Game()

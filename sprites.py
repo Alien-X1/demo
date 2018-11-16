@@ -75,12 +75,12 @@ class Player(Sprite):
             self.acc.x = FRICTION
 
 class Immovable(Sprite):
-    def __init__(self):
+    def __init__(self, w, h, x, y):
         Sprite.__init__(self)
-        self.image = ""
+        self.image = pg.Surface((w, h))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.center = ""
-        self.pos = ""
+        self.rect.center = (x, y)
+        self.pos = (x, y)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)

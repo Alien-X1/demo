@@ -15,7 +15,7 @@ vec = pg.math.Vector2
 class Player(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        self.image = pg.Surface((30,60))
+        self.image = pg.Surface((PIX, 2 * PIX))
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.rect.center = (40, HEIGHT - 60)
@@ -23,15 +23,17 @@ class Player(Sprite):
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
         self.collide_g = False
-        self.max_jumps = 1
+        self.max_jumps = PLAYER_MAX_JUMPS
+        self.max_vel = PLAYER_MAX_VEL
+        self.jump_vel = PLAYER_JUMP_VEL
         self.jumps = 0
 
     def update(self):
         self.acc = vec(0, 0)
         keys = pg.key.get_pressed()
-        if keys[pg.K_LEFT] and self.vel.x > -10:
+        if keys[pg.K_LEFT] and self.vel.x > -self.max_vel:
             self.acc.x =  -ACCELERATION
-        if keys[pg.K_RIGHT] and self.vel.x < 10:
+        if keys[pg.K_RIGHT] and self.vel.x < self.max_vel:
             self.acc.x = ACCELERATION
         self.jump()
         self.gravity()
@@ -48,7 +50,7 @@ class Player(Sprite):
         if keys[pg.K_UP] and (self.collide_g == True or self.jumps < self.max_jumps) and self.vel.y >= 0:
             self.collide = False
             self.jumps += 1
-            self.vel.y -= PLAYER_JUMP_VEL
+            self.vel.y -= self.jump_vel
         if self.collide_g == True :
             self.jumps = 0
 
@@ -101,11 +103,11 @@ class Baddie(Sprite):
 class Immovable(Sprite):
     def __init__(self, w, h, x, y):
         Sprite.__init__(self)
-        self.image = pg.Surface((w, h))
+        self.image = pg.Surface((w * PIX, h * PIX))
         self.image.fill(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.pos = (x, y)
+        self.rect.center = (x * PIX + PIX / 2, y * PIX)
+        self.pos = (x * PIX + PIX / 2, y * PIX)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
@@ -119,28 +121,30 @@ class Immovable(Sprite):
 class Trap(Sprite):
     def __init__(self, w, h, x, y):
         Sprite.__init__(self)
-        self.image = pg.Surface((w, h))
-        self.image.fill(BLACK)
+        self.image = pg.Surface((w * PIX, h * PIX))
+        self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.pos = (x, y)
+        self.rect.center = (x * PIX + PIX / 2, y * PIX)
+        self.pos = (x * PIX + PIX / 2, y * PIX)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
-    
+
     def update(self):
-        self.acc = vec(0, 0)
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         self.rect.midtop = self.pos
+        if self.pos.y > HEIGHT:
+            self.kill()
 
 class Powerup(Sprite):
-    def __init__(self, w, h, x, y):
+    def __init__(self, w, h, x, y, t):
         Sprite.__init__(self)
-        self.image = pg.Surface((w * 30, h * 30))
-        self.image.fill(BLACK)
+        self.image = pg.Surface((w * PIX, h * PIX))
+        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
-        self.rect.center = (x * 30, y * 30)
-        self.pos = (x * 30, y * 30)
+        self.rect.center = (x * PIX + PIX / 2, y * PIX)
+        self.pos = (x * PIX + PIX / 2, y * PIX)
+        self.type = t
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
@@ -149,5 +153,3 @@ class Powerup(Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         self.rect.midtop = self.pos
-
-    # def ability(self):

@@ -1,16 +1,21 @@
 TITLE = "jumpy"
 # Screen Dimensions
-WIDTH = 1370
-HEIGHT = 840
+WIDTH = 1200
+HEIGHT = 720
 # Frames Per Second
 TICKS = 60
 # Colors
 WHITE = (255,255,255)
 BLACK = (0,0,0)
 GREEN = (0,255,0)
+YELLOW = (255,255,0)
 REDDISH = (240,55,66)
+BLUE = (0,0,255)
 # Player game settings
 FRICTION = 1
 ACCELERATION = 1
 GRAVITY = 1
 PLAYER_JUMP_VEL = 15
+PLAYER_MAX_VEL = 10
+PLAYER_MAX_JUMPS = 1
+PIX = 30

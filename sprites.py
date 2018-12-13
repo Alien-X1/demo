@@ -7,7 +7,7 @@
 
 import pygame as pg
 from pygame.sprite import Sprite
-import random
+from random import randint
 from settings import *
 
 vec = pg.math.Vector2
@@ -15,8 +15,7 @@ vec = pg.math.Vector2
 class Player(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        self.image = pg.Surface((PIX, 2 * PIX))
-        self.image.fill(WHITE)
+        self.image = pg.transform.scale(p_walk_mask, (1 * PIX, 2 * PIX))
         self.rect = self.image.get_rect()
         self.rect.center = (40, HEIGHT - 60)
         self.pos = vec(40, HEIGHT - 60)
@@ -79,8 +78,7 @@ class Player(Sprite):
 class Baddie(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        self.image = pg.Surface((30,30))
-        self.image.fill(GREEN)
+        self.image = pg.transform.scale(b_masks[randint(0,1)], (1 * PIX, 1 * PIX))
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH, HEIGHT / 2)
         self.pos = vec(WIDTH, HEIGHT / 2)
@@ -103,8 +101,7 @@ class Baddie(Sprite):
 class Immovable(Sprite):
     def __init__(self, w, h, x, y):
         Sprite.__init__(self)
-        self.image = pg.Surface((w * PIX, h * PIX))
-        self.image.fill(BLACK)
+        self.image = pg.transform.scale(s_top_mask, (w * PIX, h * PIX))
         self.rect = self.image.get_rect()
         self.rect.center = (x * PIX + PIX / 2, y * PIX)
         self.pos = (x * PIX + PIX / 2, y * PIX)
@@ -121,8 +118,7 @@ class Immovable(Sprite):
 class Trap(Sprite):
     def __init__(self, w, h, x, y):
         Sprite.__init__(self)
-        self.image = pg.Surface((w * PIX, h * PIX))
-        self.image.fill(BLUE)
+        self.image = pg.transform.scale(t_top_mask, (w * PIX, h * PIX))
         self.rect = self.image.get_rect()
         self.rect.center = (x * PIX + PIX / 2, y * PIX)
         self.pos = (x * PIX + PIX / 2, y * PIX)
@@ -139,12 +135,31 @@ class Trap(Sprite):
 class Powerup(Sprite):
     def __init__(self, w, h, x, y, t):
         Sprite.__init__(self)
-        self.image = pg.Surface((w * PIX, h * PIX))
-        self.image.fill(YELLOW)
+        self.image = pg.transform.scale(pow_mask, (w * PIX, h * PIX))
         self.rect = self.image.get_rect()
         self.rect.center = (x * PIX + PIX / 2, y * PIX)
         self.pos = (x * PIX + PIX / 2, y * PIX)
         self.type = t
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0)
+
+    def update(self):
+        self.acc = vec(0, 0)
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.midtop = self.pos
+
+class Hidden(Sprite):
+    def __init__(self, w, h, x, y):
+        Sprite.__init__(self)
+        self.image = pg.transform.scale(h_mask, (w * PIX, h * PIX))
+        # self.color = RED
+        # self.color = NAVY
+        # self.image.fill(self.color)
+        self.glow = self.image.get_rect()
+        self.rect = self.image.get_rect()
+        self.rect.center = (x * PIX + PIX / 2, y * PIX)
+        self.pos = (x * PIX + PIX / 2, y * PIX)
         self.vel = vec(0, 0)
         self.acc = vec(0, 0)
 
